@@ -5,8 +5,8 @@ import sys, traceback
 import os
 from dotenv import load_dotenv
 
-load_dotenv()
-BotToken = os.getenv("DISCORDTOKEN")
+load_dotenv("Tokens.env")
+BotToken = os.getenv('DISCORDTOKEN')
 
 def get_prefix(bot, message):
     prefixes = ['!']
@@ -18,7 +18,7 @@ def get_prefix(bot, message):
 
 initial_extensions = ['cogs.owner','cogs.music']
 
-bot = commands.Bot(command_prefix=get_prefix, description='Roblox night bot time', intents=discord.Intents().all())
+bot = commands.Bot(command_prefix=get_prefix, description='yes', intents=discord.Intents().all())
 
 @bot.event
 async def on_ready():

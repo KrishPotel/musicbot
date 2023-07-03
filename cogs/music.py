@@ -18,7 +18,7 @@ from dotenv import load_dotenv
 class MusicCog(commands.Cog):
 
     def __init__(self, bot):
-        load_dotenv()
+        load_dotenv("Tokens.env")
         self.bot = bot
         self.musicQ = []
         self.client_id = os.getenv("SpotifyClientId")
