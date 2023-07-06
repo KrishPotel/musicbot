@@ -1,3 +1,4 @@
+#welcome to the many imports
 from discord.ext import commands
 from discord import VoiceClient
 from youtube_dl import YoutubeDL
@@ -15,12 +16,14 @@ from youtubesearchpython.__future__ import VideosSearch
 import os
 from dotenv import load_dotenv
 
+#cog
 class MusicCog(commands.Cog):
 
     def __init__(self, bot):
         load_dotenv("Tokens.env")
         self.bot = bot
         self.musicQ = []
+        self.musicInfo = []
         self.client_id = os.getenv("SpotifyClientId")
         self.client_secret = os.getenv("SpotifyClientSecret")
         client_credentials_manager = SpotifyClientCredentials(client_id=self.client_id, client_secret=self.client_secret)
@@ -79,8 +82,10 @@ class MusicCog(commands.Cog):
 
             if(self.musicQ.__len__() <= 0):
                 self.musicQ.append(q)
+                self.musicInfo.append(v)
                 await self.playsong(ctx, song=self.musicQ[0])
             else:
+                self.musicInfo.append(v)
                 self.musicQ.append(q)
                 print(v["title"])
 
@@ -88,24 +93,29 @@ class MusicCog(commands.Cog):
     @commands.command(name='play', hidden=False)
     async def play(self, ctx, *, query):
 
-        if("open.spotify.com" in query):
+        if("open.spotify.com/playlist" in query):
            await self.getSpotifySongs(ctx, query)
         else:
             v,q = self.search(query)
 
             if(self.musicQ.__len__() <= 0):
+                self.musicInfo.append(v)
                 self.musicQ.append(q)
                 await self.playsong(ctx, song=self.musicQ[0])
             else:
+                self.musicInfo.append(v)
                 self.musicQ.append(q)
                 print(v["title"])
+                await ctx.send(f"Added {v['title']} by, {v['author']}")
+
 
         while ctx.voice_client.is_playing():
-            await asyncio.sleep(1)
+            await asyncio.sleep(2)
 
         if(ctx.voice_client.is_playing()):
             print(ctx.voice_client.is_playing())
         else:
+            self.musicInfo.pop(0)
             self.musicQ.pop(0)
             if(self.musicQ.__len__() >= 0):
                 await self.playsong(ctx, self.musicQ[0])
@@ -113,7 +123,14 @@ class MusicCog(commands.Cog):
 
     @commands.command(name='Queue', hidden=False)
     async def Queue(self, ctx):
-        await ctx.send(self.musicQ)
+        embed=discord.Embed(title="Music Queue", description=f"Next up: {self.musicInfo[1]['title']}", color=discord.Color(0x6257ff))
+        thumbnail = self.musicInfo[1]["thumbnail"]
+        print(self.musicInfo[1]["thumbnail"])
+        embed.set_thumbnail(url=f"{thumbnail}")
+        embed.set_author(name="Bought")
+        #idk why I did it this way but it is the way it is
+        [embed.add_field(name=x["title"], value=x["artist"], inline=True) for index, x in enumerate(self.musicInfo) if index != 0]     
+        await ctx.send(embed=embed)
     
     @commands.command(name='skip', hidden=False)
     async def skip(self, ctx):
