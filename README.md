@@ -8,4 +8,5 @@ Theres a quite a few packages that are required I think this list should do it
 - spotipy
 - youtubesearchpython
 - dotenv
+
 I use a lot of them for the music cog
