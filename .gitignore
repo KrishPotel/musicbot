@@ -1,3 +1,4 @@
 Tokens.env
 *.pyc
 *.cache
+*.env

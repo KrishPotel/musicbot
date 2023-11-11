@@ -16,7 +16,7 @@ def get_prefix(bot, message):
 
     return commands.when_mentioned_or(*prefixes)(bot, message)
 
-initial_extensions = ['cogs.owner','cogs.music']
+initial_extensions = ['cogs.owner','cogs.music', 'cogs.Random']
 
 bot = commands.Bot(command_prefix=get_prefix, description='yes', intents=discord.Intents().all())
 
@@ -24,6 +24,7 @@ bot = commands.Bot(command_prefix=get_prefix, description='yes', intents=discord
 async def on_ready():
     for extension in initial_extensions:
         await bot.load_extension(extension)
+        print(extension, "is loaded")
 
     print(f'\n\nLogged in as: {bot.user.name} - {bot.user.id}\nVersion: {discord.__version__}\n')
 
